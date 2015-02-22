@@ -1,7 +1,17 @@
 #Pass Environment variable from recipe
 ENV['MESSAGE'] = 'Hello from Chef'
 
-Chef::Resource::User.send(:include, ::Helper)
+::Chef::Recipe.send(:include, Demo::Helper)
+# include Chef::Mixin::Shellout
+::Chef::Recipe.send(:include, Chef::Mixin::ShellOut)
+
+my_cmd="dir"
+# later in your code ...
+output = shell_out! my_cmd
+
+Chef::Log.info "Output: #{ output.stdout }"
+Chef::Log.info "Errors: #{ output.stderr }" unless output.stderr.empty?
+
 
 file "c:/temp/a.txt" do 
 	content "Hello world"
@@ -27,8 +37,9 @@ node.override[:chef_repo][:v]="1.85"
 execute 'echo the path attribute' do
   command "echo #{node[:chef_repo][:v]}"
 end
-
-file "c:/temp/a.txt" do 
+path=getFolder()
+file path do 
 	content "Hello world"
-	only_if { has_bacon? }
+	
 end
+
