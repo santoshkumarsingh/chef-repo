@@ -14,21 +14,21 @@
 
 #Chef::Resource::Notification.new("template[#{app_root}/#{applet_name}/local_settings.py", :create)
  
-node[:test][:content] = "old content"
+#node[:test][:content] = "old content"
  
 # Step 1
-ruby_block "step1" do
-  block do
-    node[:test][:content] = "new content"
-  end
-end
+#ruby_block "step1" do
+ # block do
+  #  node[:test][:content] = "new content"
+  #end
+#end
  
 # Step 2
-file "/tmp/some_file" do
-  owner "root"
-  group "root"
-  content node[:test][:content]
-end
+#file "/tmp/some_file" do
+ # owner "root"
+  #group "root"
+  #content node[:test][:content]
+#end
  
 # =========================================================================== #
 # file resource will still have the old content as it is set in the compile
@@ -36,12 +36,14 @@ end
  
 # ========================== With modified code ============================= #
  
-node[:test][:content] = "old content"
+
+node.override[:test][:content]="old content"
  
 # Step 1
 ruby_block "step1" do
   block do
-    node[:test][:content] = "new_content"
+ #   node[:test][:content] = "new_content"
+ node.override[:test][:content]="santosh content"
  
     # Dynamically set the file resource's attribute
     # Obtain the desired resource from resource_collection
@@ -53,8 +55,7 @@ end
  
 # Step 2
 file "/tmp/some_file" do
-  owner "root"
-  group "root"
+ 
   content node[:test][:content]
 end
  
